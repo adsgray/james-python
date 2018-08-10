@@ -16,6 +16,7 @@ c.pack()
 
 ship_id = c.create_polygon(5, 5, 5, 25, 30, 15, fill='red')
 ship_id2 = c.create_oval(0,0, 30, 30, outline='red')
+SHIP_R = 15
 
 MID_X = WIDTH / 2
 MID_Y = HEIGHT / 2
@@ -68,12 +69,49 @@ def move_bubbles():
         c.move(bub_id[i], -bub_speed[i], 0)
 
 
+def get_coords(id_num):
+    pos = c.coords(id_num)
+    x = (pos[0] + pos[2])/2
+    y = (pos[1] + pos[3])/2
+    return x, y
+
+def del_bubble(i):
+    del bub_r[i]
+    del bub_speed[i]
+    c.delete(bub_id[i])
+    del bub_id[i]
+
+def clean_up_bubs():
+    for i in range(len(bub_id) - 1, -1, -1):
+        x, y = get_coords(bub_id[i])
+        if x < -GAP:
+            del_bubble(i)
+
+
+from math import sqrt
+def distance(id1, id2):
+    x1, y1 = get_coords(id1)
+    x2, y2 = get_coords(id2)
+    return sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+def collision():
+    points = 0
+    for bub in range(len(bub_id) - 1, -1, -1):
+        if distance(ship_id2, bub_id[bub]) < (SHIP_R + bub_r[bub]):
+            points += (bub_r[bub] + bub_speed[bub])
+            del_bubble(bub)
+    return points
+
 from time import sleep, time
 BUB_CHANCE = 10
+score = 0
 # MAIN GAME LOOP
 while True:
     if randint(1, BUB_CHANCE) == 1:
         create_bubble()
     move_bubbles()
+    clean_up_bubs()
+    score += collision()
+    print(score)
     window.update()
     sleep(0.01)
