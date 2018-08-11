@@ -102,16 +102,37 @@ def collision():
             del_bubble(bub)
     return points
 
+
+c.create_text(50, 30, text='TIME', fill='white')
+c.create_text(150, 30, text='SCORE', fill='white')
+time_text = c.create_text(50, 50, fill='white')
+score_text = c.create_text(150, 50, fill='white')
+
+def show_score(score):
+    c.itemconfig(score_text, text=str(score))
+
+def show_time(time_left):
+    c.itemconfig(time_text, text=str(time_left))
+
 from time import sleep, time
 BUB_CHANCE = 10
+TIME_LIMIT = 30
+BONUS_SCORE = 1000
 score = 0
+bonus = 0
+end = time() + TIME_LIMIT
+
 # MAIN GAME LOOP
-while True:
+while time() < end:
     if randint(1, BUB_CHANCE) == 1:
         create_bubble()
     move_bubbles()
     clean_up_bubs()
     score += collision()
-    print(score)
+    if (int(score / BONUS_SCORE)) > bonus:
+        bonus += 1
+        end += TIME_LIMIT
+    show_score(score)
+    show_time(int(end - time()))
     window.update()
     sleep(0.01)
