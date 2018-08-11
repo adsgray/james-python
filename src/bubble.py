@@ -117,7 +117,7 @@ def show_time(time_left):
 from time import sleep, time
 BUB_CHANCE = 10
 TIME_LIMIT = 30
-BONUS_SCORE = 1000
+BONUS_SCORE = 600
 score = 0
 bonus = 0
 end = time() + TIME_LIMIT
@@ -136,3 +136,10 @@ while time() < end:
     show_time(int(end - time()))
     window.update()
     sleep(0.01)
+
+
+c.create_text(MID_X, MID_Y, text='GAME OVER', fill='white', font=('Helvetica', 30))
+c.create_text(MID_X, MID_Y + 30, text='Score: ' + str(score), fill='white')
+c.create_text(MID_X, MID_Y + 45, text='Bonus time: ' + str(bonus * TIME_LIMIT), fill='white')
+
+sleep(5)
